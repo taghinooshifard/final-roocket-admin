@@ -1,0 +1,37 @@
+import { BaseUrl, TOKEN_NAME } from "@/app/models/DefaultData";
+import { log } from "console";
+import { NextRequest } from "next/server";
+
+export async function GET(request: NextRequest) {
+  try {
+    const token = request.cookies.get(TOKEN_NAME);
+    if (!token)
+      return Response.json(
+        { message: "دسترسی غیر مجاز" },
+        {
+          status: 401,
+        }
+      );
+    const res = await fetch(`${BaseUrl}/current-user`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token.value}`,
+      },
+    });
+
+    const data = await res.json();
+
+    return new Response(JSON.stringify(data), {
+      status: res.status,
+    });
+  } catch (error: any) {
+    log("error", error);
+    return Response.json(
+      { message: "دسترسی غیر مجاز" },
+      {
+        status: 401,
+      }
+    );
+  }
+}
