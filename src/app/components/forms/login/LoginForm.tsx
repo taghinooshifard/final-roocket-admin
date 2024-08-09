@@ -7,14 +7,23 @@ import { Bounce, toast } from "react-toastify";
 import MessageError from "@/app/exceptions/MessageError";
 import ValidationError from "@/app/exceptions/validationErrors";
 import { useDispatch } from "react-redux";
-import { redirect } from "next/navigation";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
+import { Dispatch, ThunkDispatch, UnknownAction } from "@reduxjs/toolkit";
+import { AuthState, updateUser } from "@/app/store/auth";
 const loginFormSchema = yup.object().shape({
   email: yup.string().required(),
   password: yup.string().required().min(8),
 });
 export interface LoginDefaultValues {
   route: AppRouterInstance;
+  dispatch: ThunkDispatch<
+    {
+      auth: AuthState;
+    },
+    undefined,
+    UnknownAction
+  > &
+    Dispatch<UnknownAction>;
 }
 const LoginForm = withFormik<LoginDefaultValues, LoginParams>({
   validationSchema: loginFormSchema,
@@ -45,7 +54,8 @@ const LoginForm = withFormik<LoginDefaultValues, LoginParams>({
           transition: Bounce,
         });
         setSubmitting(false);
-        await props.route.push("/admin");
+        props.dispatch(updateUser(undefined));
+        props.route.push("/admin");
       }
     } catch (error: any) {
       setSubmitting(false);

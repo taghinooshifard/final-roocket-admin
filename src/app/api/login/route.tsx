@@ -1,6 +1,7 @@
-import { MAX_AGE, TOKEN_NAME } from "@/app/models/DefaultData";
+import { MAX_AGE, TOKEN_NAME, BaseUrl } from "@/app/models/DefaultData";
 
 import cookie from "cookie";
+import { NextRequest } from "next/server";
 
 export async function POST(request: Request) {
   try {

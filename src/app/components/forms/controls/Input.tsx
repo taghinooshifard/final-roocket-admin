@@ -23,7 +23,7 @@ export default function InputControl(params: Props) {
       </label>
       <div className="relative ">
         <div className="flex items-center">
-          <div className="absolute inset-y-3 start-0 flex items-center h-5 ps-3.5 pointer-events-none">
+          <div className="absolute inset-y-3 start-0 flex items-center justify-center h-5 ps-3.5 pointer-events-none">
             <params.icon className="w-5 h-5" />
           </div>
           <Field
@@ -34,6 +34,7 @@ export default function InputControl(params: Props) {
               params.className ?? ""
             }`}
             placeholder={params.placeholder}
+            
           />
         </div>
         <ErrorMessage

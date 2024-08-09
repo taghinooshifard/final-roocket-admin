@@ -1,5 +1,4 @@
 import { BaseUrl, TOKEN_NAME } from "@/app/models/DefaultData";
-import { log } from "console";
 import { NextRequest } from "next/server";
 
 export async function GET(request: NextRequest) {
@@ -26,9 +25,8 @@ export async function GET(request: NextRequest) {
       status: res.status,
     });
   } catch (error: any) {
-    log("error", error);
     return Response.json(
-      { message: "دسترسی غیر مجاز" },
+      { message: "خطا در ارتباط با سرور رخ داده است" },
       {
         status: 401,
       }

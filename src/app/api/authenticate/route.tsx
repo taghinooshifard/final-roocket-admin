@@ -17,6 +17,11 @@ export async function POST(request: Request) {
       status: res.status,
     });
   } catch (error: any) {
-    return new Response(error);
+    return Response.json(
+      { message: "خطا در زمان ارتباط با سرور رخ داده است" },
+      {
+        status: 401,
+      }
+    );
   }
 }

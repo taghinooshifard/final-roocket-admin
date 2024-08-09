@@ -7,12 +7,15 @@ import LoadingSpinner from "../components/shared/loadingSpinner";
 import { redirect, useRouter } from "next/navigation";
 import MessageError from "../exceptions/MessageError";
 import { Bounce, toast } from "react-toastify";
+import { error } from "console";
+import { useAppDispatch } from "../hooks";
 
 interface Props {}
 
 export default function LoginPage(params: Props) {
   const { user, error, loading } = useAuth();
   const route = useRouter();
+  const dispatch = useAppDispatch();
   if (loading)
     return (
       <div className="text-center mt-10">
@@ -20,5 +23,5 @@ export default function LoginPage(params: Props) {
       </div>
     );
   if (user) route.push("/admin");
-  return <LoginForm route={route} />;
+  return <LoginForm route={route} dispatch={dispatch} />;
 }

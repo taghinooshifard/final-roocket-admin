@@ -4,10 +4,13 @@ import { redirect, useRouter } from "next/navigation";
 import { useState } from "react";
 import { Bounce, toast } from "react-toastify";
 import Spinner from "../../shared/Spinner";
+import { useAppDispatch } from "@/app/hooks";
+import { updateUser } from "@/app/store/auth";
 
 export default function LogOut() {
   const router = useRouter();
   const [Submitting, setSubmitting] = useState(false);
+  const dispatch = useAppDispatch();
   const cancelHandler = async () => {
     await router.push("/admin");
   };
@@ -28,7 +31,8 @@ export default function LogOut() {
           transition: Bounce,
         });
         setSubmitting(false);
-        await router.push("/login");
+        dispatch(updateUser(undefined));
+        router.push("/login");
       }
     } catch (error: any) {
       setSubmitting(false);

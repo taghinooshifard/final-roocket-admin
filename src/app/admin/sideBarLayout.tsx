@@ -15,6 +15,7 @@ import {
 import Modal from "../components/shared/modal";
 import LogOut from "../components/forms/logout/LogOut";
 import UserInfo from "../components/UserInfo";
+import { useAppDispatch } from "../hooks";
 interface Props {
   setDynamicSidebar: Dispatch<SetStateAction<boolean>>;
   dynamicSidebar: boolean;

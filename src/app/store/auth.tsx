@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
 import { RootState } from ".";
-interface AuthState {
+export interface AuthState {
   userToken?: string;
   userName?: string;
 }

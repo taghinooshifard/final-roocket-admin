@@ -13,8 +13,8 @@ interface Props {
   className?: string;
   errorClassName?: string;
   icon: IconType;
-  options: SelectOption[];
-  onChange?: (e: ChangeEvent) => void;
+  options?: SelectOption[];
+  onChange?: (e: ChangeEvent<HTMLSelectElement>) => void;
 }
 
 export default function SelectBoxControl(params: Props) {
