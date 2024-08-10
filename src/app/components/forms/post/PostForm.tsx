@@ -15,6 +15,10 @@ const PostFormSchema = yup.object().shape({
   title: yup.string().required().min(5).max(255),
   slug: yup.string().required().min(5).max(255),
   is_published: yup.boolean().required(),
+  category_id: yup
+    .number()
+    .moreThan(0, "Please Select a Category"),
+  image_url: yup.string().url("Url is not correct"),
 });
 export interface PostDefaultValues {
   router: AppRouterInstance;
@@ -29,22 +33,24 @@ const PostForm = withFormik<PostDefaultValues, PostModel>({
       title: "",
       slug: "",
       is_published: false,
+      category_id: 0,
+      content: "",
+      image_url:""
     };
   },
   handleSubmit: async (values, { props, setFieldError, setSubmitting }) => {
     try {
-      // alert("clicked");
-      // setSubmitting(true);
-      console.log("values:", values);
 
-      // const data = await Post({
-      //   url: "/api/data?url=/article",
-      //   values,
-      // });
-      // if (data?.message) {
-      //   await toast.success("Post Added.");
-      //   setSubmitting(false);
-      // }
+      setSubmitting(true);
+
+      const data = await Post({
+        url: "/api/data?url=/article",
+        values,
+      });
+      if (data?.message) {
+        await toast.success("Post Added.");
+        setSubmitting(false);
+      }
 
       if (props.mutate) await props.mutate();
       props.router.push("/admin/post");

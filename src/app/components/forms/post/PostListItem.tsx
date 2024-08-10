@@ -8,36 +8,36 @@ import { KeyedMutator } from "swr";
 
 import { useSelector } from "react-redux";
 import { selectUser } from "@/app/store/auth";
-import CategoryModel from "@/app/models/CaregoryData";
 import MessageError from "@/app/exceptions/MessageError";
 import Modal from "../../shared/modal";
 import EditCategoryForm from "./EditCatgoryForm";
 import { Delete } from "@/app/tools/ApiManager";
+import PostModel from "@/app/models/PostData";
 
 interface Props {
-  category: CategoryModel;
+  post: PostModel;
   mutate: KeyedMutator<{
     data: any;
     total_page: any;
   }>;
   page: number;
 }
-export default function CategoryListItem({ category, mutate, page }: Props) {
+export default function PostListItem({ post, mutate, page }: Props) {
   const user = useSelector(selectUser);
   const [deleteShow, setDeleteShow] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
-  const isOpen = () => searchParams.has(`edit-${category.id}`);
+  const isOpen = () => searchParams.has(`edit-${post.slug}`);
   const deleteHandler = async () => {
     try {
       const data = await Delete({
-        url: `/api/data?url=/article-category/${category.id}`,
+        url: `/api/data?url=/article/${post.slug}`,
       });
       if (data?.message) {
-        await toast.success("Category Deleted.");
+        await toast.success("Post Deleted.");
       }
       await mutate();
-      router.push(`/admin/category?page=${page}`);
+      router.push(`/admin/article?page=${page}`);
     } catch (error: any) {
       if (error instanceof MessageError) {
         toast.error(error.messages);
@@ -45,7 +45,7 @@ export default function CategoryListItem({ category, mutate, page }: Props) {
     }
   };
   return (
-    <tr key={category.id}>
+    <tr key={post.id}>
       <td className="hidden">
         {deleteShow && (
           <DeleteConfirmation

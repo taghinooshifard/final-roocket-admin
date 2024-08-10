@@ -35,8 +35,8 @@ export default function AdminPostPage(params: Props) {
       </div>
     );
   if (error) return <h1>{error.messages}</h1>;
-  const isOpen = () => searchParams.has("create");
 
+  const isOpen = () => searchParams.has("create");
   const onPageChange = ({ selected }: { selected: number }) =>
     router.push(`/admin/post?page=${selected + 1}`);
 
@@ -75,7 +75,7 @@ export default function AdminPostPage(params: Props) {
 
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
         {/* Table Post Lists */}
-        {PostList?.data?.data?.length > 1 ? (
+        {PostList?.data?.data?.length > 0 ? (
           <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
             <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
               <tr>

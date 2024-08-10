@@ -16,7 +16,11 @@ import RichText from "../controls/RichText";
 type PostFormProps = FormikProps<PostModel> & {
   post: PostModel;
 };
+
 export default function innerPostForm(params: PostFormProps) {
+  const onChange = (value: string | undefined) => {
+    params.setFieldValue("content", value);
+  };
   return (
     <div className="flex  py-2 px-2 grid-cols-6  ">
       <Form className="flex flex-col gap-4">
@@ -41,10 +45,8 @@ export default function innerPostForm(params: PostFormProps) {
           id="category_id"
           name="category_id"
           icon={BiSolidCategory}
-          // onChange={(e: ChangeEvent<HTMLSelectElement>) => {
-          //   console.log(e.target.value);
-          // }}
           fetchUrl={`url=article-category&per_page=1000`}
+          firstOption={"Please Select"}
         />
         <CheckBox
           label="isPublished:"
@@ -85,8 +87,12 @@ export default function innerPostForm(params: PostFormProps) {
           placeholder="Enter Image Address..."
           icon={LuImagePlus}
         />
-        {/* <RichText id="content" name="content" /> */}
-        <div className="flex justify-center py-5 gap-2">
+        <RichText
+          onChange={onChange}
+          value={params?.post?.content}
+          placeHolder="tell your story..."
+        />
+        <div className="flex justify-center mt-16 py-5 gap-2">
           <button
             disabled={params.isSubmitting}
             className="bg-blue-500 px-5 py-2 rounded-md"

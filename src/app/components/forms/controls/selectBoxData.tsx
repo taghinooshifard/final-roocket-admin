@@ -20,6 +20,7 @@ interface Props {
   options?: SelectOption[];
   onChange?: (e: ChangeEvent<HTMLSelectElement>) => void;
   fetchUrl: string;
+  firstOption: string;
 }
 
 export default function SelectBoxData(params: Props) {
@@ -52,6 +53,11 @@ export default function SelectBoxData(params: Props) {
         </button>
       </div>
     );
+  if (categoryList?.data?.data[0]?.id != 0)
+    categoryList?.data?.data.unshift({
+      id: 0,
+      title: "Please Select",
+    });
   return (
     <SelectBoxControl
       label="Category:"
