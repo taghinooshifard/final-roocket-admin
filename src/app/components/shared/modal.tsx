@@ -1,12 +1,22 @@
-import { ReactElement, SetStateAction } from "react";
+import { ReactElement, SetStateAction, useEffect } from "react";
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
 interface Props {
   children: ReactElement;
   setIsOpen: (value: SetStateAction<boolean>) => void;
   isOpen: boolean;
   title: string;
+  onload?: () => void;
 }
-export default function Modal({ children, setIsOpen, isOpen, title }: Props) {
+export default function Modal({
+  children,
+  setIsOpen,
+  isOpen,
+  title,
+  onload,
+}: Props) {
+  useEffect(() => {
+    if (onload) onload();
+  }, []);
   return (
     <Dialog
       open={isOpen}

@@ -6,7 +6,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { MdContactMail, MdSpaceDashboard } from "react-icons/md";
 import { BiSolidCategory, BiUserCircle } from "react-icons/bi";
 import { PiArticleNyTimesBold } from "react-icons/pi";
-import { FaComments, FaUserCog } from "react-icons/fa";
+import { CgProfile } from "react-icons/cg";
 import { IoLogOut } from "react-icons/io5";
 import {
   HiOutlineAdjustmentsHorizontal,
@@ -41,15 +41,16 @@ export default function SideBarAdminLayout(props: Props) {
       icon: PiArticleNyTimesBold,
     },
     {
-      href: "/admin/comments",
-      name: "Comments",
-      icon: FaComments,
-    },
-    {
       href: "/admin/contact",
       name: "Contacts",
       icon: MdContactMail,
     },
+    {
+      href: "/admin/profile",
+      name: "Profile",
+      icon: CgProfile,
+    },
+
     {
       href: "/admin?logout",
       name: "Logout",
@@ -76,7 +77,7 @@ export default function SideBarAdminLayout(props: Props) {
   }
   const currentPath = usePathname();
   const [selectedLanguage, setSelectedLanguage] = useState(LanguageIcons[1]);
-  const [showLangMenu, setShowLangMenu] = useState(false);
+  const [showLangMenu, setShowLangMenu] = useState(true);
   const [subMenuTransfer, setSubMenuTransfer] = useState({
     position: "absolute",
     inset: "0px auto auto 0px",

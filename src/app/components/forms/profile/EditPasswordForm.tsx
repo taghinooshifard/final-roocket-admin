@@ -6,47 +6,52 @@ import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.share
 
 import { toast } from "react-toastify";
 import { KeyedMutator } from "swr";
-import CategoryData from "@/app/models/CaregoryData";
-import CategoryModel from "@/app/models/CaregoryData";
 import MessageError from "@/app/exceptions/MessageError";
-import innerCategoryForm from "./InnerCategoryForm";
 import { Patch } from "@/app/tools/ApiManager";
+import ProfileModel from "@/app/models/ProfileData";
+import InnerProfilePasswordForm from "./InnerProfilePasswordForm";
 
-const CategoryFormSchema = yup.object().shape({
-  title: yup.string().required().min(5).max(255),
+const ProfilePasswordSchema = yup.object().shape({
+  password: yup.string().required("Password is required"),
+  passwordConfirmation: yup
+    .string()
+    .oneOf([yup.ref("password")], "Passwords must match"),
 });
-export interface CategoryDefaultValues {
+export interface ProfileNameDefaultValues {
   router: AppRouterInstance;
   mutate?: KeyedMutator<{
     data: any;
     total_page: any;
   }>;
-  category: CategoryData;
-  page?: number;
-  filter: string;
+  profile: ProfileModel;
 }
-const EditCategoryForm = withFormik<CategoryDefaultValues, CategoryModel>({
+const EditPasswordForm = withFormik<ProfileNameDefaultValues, ProfileModel>({
   mapPropsToValues: (props) => {
     return {
-      title: props.category?.title ?? "",
+      name: props.profile?.name,
+      email: props.profile?.email,
+      password: props.profile?.password,
+      passwordConfirmation: props.profile?.password,
     };
   },
   handleSubmit: async (values, { props, setFieldError, setSubmitting }) => {
     try {
       setSubmitting(true);
       const data = await Patch({
-        url: `/api/data?url=/article-category/${props.category.id}`,
-        values,
+        url: `/api/data?url=/profile/update-password`,
+        values: {
+          password: values.password,
+          "password.confirmation": values.passwordConfirmation,
+        },
+        // values,
       });
       if (data?.message) {
-        await toast.success("Category Changed.");
+        await toast.success("Password Changed.");
         setSubmitting(false);
       }
 
       if (props.mutate) await props.mutate();
-      props.page
-        ? props.router.push(`/admin/category?page=${props.page}${props.filter}`)
-        : props.router.push(`/admin/category`);
+      props.router.push(`/admin/profile`);
     } catch (error: any) {
       if (error instanceof ValidationError) {
         Object.entries(error.messages).forEach(([key, value]) =>
@@ -58,7 +63,7 @@ const EditCategoryForm = withFormik<CategoryDefaultValues, CategoryModel>({
       }
     }
   },
-  validationSchema: CategoryFormSchema,
-})(innerCategoryForm);
+  validationSchema: ProfilePasswordSchema,
+})(InnerProfilePasswordForm);
 
-export default EditCategoryForm;
+export default EditPasswordForm;

@@ -53,10 +53,10 @@ export default function SelectBoxData(params: Props) {
         </button>
       </div>
     );
-  if (categoryList?.data?.data[0]?.id != 0)
-    categoryList?.data?.data.unshift({
-      id: 0,
-      title: "Please Select",
+    if (categoryList?.data[0]?.value != "0")
+    categoryList?.data.unshift({
+      value: "0",
+      label: "Please Select",
     });
   return (
     <SelectBoxControl
@@ -64,9 +64,11 @@ export default function SelectBoxData(params: Props) {
       id="category_id"
       name="category_id"
       icon={BiSolidCategory}
-      options={categoryList?.data?.data?.map((category: CategoryModel) => {
-        return { label: category.title, value: category.id };
-      })}
+      options={categoryList?.data?.map(
+        (category: { value: string; label: string }) => {
+          return { label: category.label, value: category.value };
+        }
+      )}
     />
   );
 }

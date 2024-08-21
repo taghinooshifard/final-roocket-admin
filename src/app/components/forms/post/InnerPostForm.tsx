@@ -15,6 +15,7 @@ import { RiHashtag } from "react-icons/ri";
 import RichText from "../controls/RichText";
 type PostFormProps = FormikProps<PostModel> & {
   post: PostModel;
+  page: number;
 };
 
 export default function innerPostForm(params: PostFormProps) {
@@ -45,7 +46,7 @@ export default function innerPostForm(params: PostFormProps) {
           id="category_id"
           name="category_id"
           icon={BiSolidCategory}
-          fetchUrl={`url=article-category&per_page=1000`}
+          fetchUrl={`url=list/article-categories`}
           firstOption={"Please Select"}
         />
         <CheckBox
@@ -102,8 +103,8 @@ export default function innerPostForm(params: PostFormProps) {
             {params.isSubmitting && <Spinner />}
           </button>
           <Link
-            href={"/admin/post"}
-            as={"/admin/post"}
+            href={`/admin/post?page=${params.page}`}
+            as={`/admin/post?page=${params.page}`}
             className="bg-red-500 px-5 py-2 rounded-md"
           >
             Cancel

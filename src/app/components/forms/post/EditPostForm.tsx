@@ -2,52 +2,61 @@
 import ValidationError from "@/app/exceptions/validationErrors";
 import { withFormik } from "formik";
 import * as yup from "yup";
+
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 
 import { toast } from "react-toastify";
 import { KeyedMutator } from "swr";
-import CategoryData from "@/app/models/CaregoryData";
-import CategoryModel from "@/app/models/CaregoryData";
+import PostModel from "@/app/models/PostData";
 import MessageError from "@/app/exceptions/MessageError";
-import innerCategoryForm from "./InnerCategoryForm";
-import { Patch } from "@/app/tools/ApiManager";
-
-const CategoryFormSchema = yup.object().shape({
+import Patch from "@/app/tools/ApiManager";
+import innerPostForm from "./InnerPostForm";
+const PostFormSchema = yup.object().shape({
   title: yup.string().required().min(5).max(255),
+  slug: yup.string().required().min(5).max(255),
+  is_published: yup.boolean().required(),
+  category_id: yup.number().moreThan(0, "Please Select a Category"),
+  image_url: yup.string().url("Url is not correct"),
 });
-export interface CategoryDefaultValues {
+export interface PostDefaultValues {
   router: AppRouterInstance;
   mutate?: KeyedMutator<{
     data: any;
     total_page: any;
   }>;
-  category: CategoryData;
+  post: PostModel;
   page?: number;
-  filter: string;
 }
-const EditCategoryForm = withFormik<CategoryDefaultValues, CategoryModel>({
+const EditPostForm = withFormik<PostDefaultValues, PostModel>({
   mapPropsToValues: (props) => {
     return {
-      title: props.category?.title ?? "",
+      title: props.post.title,
+      slug: props.post.slug,
+      is_published: props.post.is_published,
+      category_id: props.post.category_id,
+      content: props.post.content,
+      image_url: props.post.image_url,
+      keywords: props.post.keywords,
+      description: props.post.description,
+      summary: props.post.summary,
+      published_at: props.post.published_at,
     };
   },
   handleSubmit: async (values, { props, setFieldError, setSubmitting }) => {
     try {
       setSubmitting(true);
       const data = await Patch({
-        url: `/api/data?url=/article-category/${props.category.id}`,
+        url: `/api/data?url=/article/${props.post.slug}`,
         values,
       });
       if (data?.message) {
-        await toast.success("Category Changed.");
+        await toast.success("Post Updated.");
         setSubmitting(false);
       }
-
       if (props.mutate) await props.mutate();
-      props.page
-        ? props.router.push(`/admin/category?page=${props.page}${props.filter}`)
-        : props.router.push(`/admin/category`);
+      props.router.push(`/admin/post?page=${props.page}`);
     } catch (error: any) {
+      setSubmitting(false);
       if (error instanceof ValidationError) {
         Object.entries(error.messages).forEach(([key, value]) =>
           setFieldError(key, value as string)
@@ -58,7 +67,7 @@ const EditCategoryForm = withFormik<CategoryDefaultValues, CategoryModel>({
       }
     }
   },
-  validationSchema: CategoryFormSchema,
-})(innerCategoryForm);
+  validationSchema: PostFormSchema,
+})(innerPostForm);
 
-export default EditCategoryForm;
+export default EditPostForm;

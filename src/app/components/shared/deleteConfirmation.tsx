@@ -6,6 +6,8 @@ import Spinner from "./Spinner";
 interface Props {
   header: string;
   description: string;
+  okButtonText?: string;
+  cancelButtonText?: string;
   trueHandler: () => void;
   cancelHandler: () => void;
 }
@@ -15,6 +17,8 @@ export default function DeleteConfirmation({
   description,
   trueHandler,
   cancelHandler,
+  okButtonText,
+  cancelButtonText,
 }: Props) {
   return (
     <Modal isOpen={true} setIsOpen={cancelHandler} title={header}>
@@ -33,14 +37,14 @@ export default function DeleteConfirmation({
                     type="submit"
                   >
                     {isSubmitting && <Spinner />}
-                    Delete
+                    {okButtonText ?? `Delete`}
                   </button>
                   <button
                     onClick={cancelHandler}
                     className="px-6 py-2 rounded-md shadow-md bg-gray-300 font-semibold"
                     type="button"
                   >
-                    Cancel
+                   {cancelButtonText ?? `Cancel`}
                   </button>
                 </div>
               </Form>

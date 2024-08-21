@@ -6,7 +6,7 @@ export default interface PostModel {
   category_id: number;
   category_title?: string;
   is_published: boolean;
-  published_at?: number;
+  published_at: number;
   keywords?: string;
   description?: string;
   summary?: string;

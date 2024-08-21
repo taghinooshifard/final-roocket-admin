@@ -6,46 +6,47 @@ import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.share
 
 import { toast } from "react-toastify";
 import { KeyedMutator } from "swr";
-import CategoryData from "@/app/models/CaregoryData";
-import CategoryModel from "@/app/models/CaregoryData";
 import MessageError from "@/app/exceptions/MessageError";
-import innerCategoryForm from "./InnerPostForm";
 import { Patch } from "@/app/tools/ApiManager";
+import ProfileModel from "@/app/models/ProfileData";
+import InnerProfileNameForm from "./InnerProfileNameForm";
 
-const CategoryFormSchema = yup.object().shape({
-  title: yup.string().required().min(5).max(255),
+const ProfileNameSchema = yup.object().shape({
+  name: yup.string().required().min(5).max(255),
 });
-export interface CategoryDefaultValues {
+export interface ProfileNameDefaultValues {
   router: AppRouterInstance;
   mutate?: KeyedMutator<{
     data: any;
     total_page: any;
   }>;
-  category: CategoryData;
+  profile: ProfileModel;
   page?: number;
 }
-const EditCategoryForm = withFormik<CategoryDefaultValues, CategoryModel>({
+const EditNameForm = withFormik<ProfileNameDefaultValues, ProfileModel>({
   mapPropsToValues: (props) => {
     return {
-      title: props.category?.title ?? "",
+      name: props.profile?.name,
+      email: props.profile?.email,
+      password: props.profile?.password,
     };
   },
   handleSubmit: async (values, { props, setFieldError, setSubmitting }) => {
     try {
       setSubmitting(true);
       const data = await Patch({
-        url: `/api/data?url=/article-category/${props.category.id}`,
-        values,
+        url: `/api/data?url=/profile/update-info`,
+        values: { name: values.name },
       });
       if (data?.message) {
-        await toast.success("Category Changed.");
+        await toast.success("Profile Name Changed.");
         setSubmitting(false);
       }
 
       if (props.mutate) await props.mutate();
       props.page
-        ? props.router.push(`/admin/category?page=${props.page}`)
-        : props.router.push(`/admin/category`);
+        ? props.router.push(`/admin/profile`)
+        : props.router.push(`/admin/profile`);
     } catch (error: any) {
       if (error instanceof ValidationError) {
         Object.entries(error.messages).forEach(([key, value]) =>
@@ -57,7 +58,7 @@ const EditCategoryForm = withFormik<CategoryDefaultValues, CategoryModel>({
       }
     }
   },
-  validationSchema: CategoryFormSchema,
-})(innerCategoryForm);
+  validationSchema: ProfileNameSchema,
+})(InnerProfileNameForm);
 
-export default EditCategoryForm;
+export default EditNameForm;

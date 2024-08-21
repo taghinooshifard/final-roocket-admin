@@ -1,30 +1,29 @@
-import { CategoryModel } from "@/app/models/CaregoryData";
 import { Form, FormikProps } from "formik";
 import Link from "next/link";
-import {
-  AiFillAudio,
-  AiFillDownCircle,
-  AiFillEuroCircle,
-  AiFillGift,
-} from "react-icons/ai";
 import InputControl from "../controls/Input";
-import { BiSolidCategory } from "react-icons/bi";
+import { FaLock, FaUserPen } from "react-icons/fa6";
 import Spinner from "../../shared/Spinner";
-type CategoryFormProps = FormikProps<CategoryModel> & {
-  category: CategoryModel;
-  page: number;
-};
-export default function innerCategoryForm(params: CategoryFormProps) {
+import ProfileModel from "@/app/models/ProfileData";
+type CategoryFormProps = FormikProps<ProfileModel>;
+export default function InnerProfilePasswordForm(params: CategoryFormProps) {
   return (
     <div className="flex gap-4 py-2 px-2 grid-cols-4">
       <Form>
         <InputControl
-          label="Category Name"
-          id="title"
-          name="title"
+          label="Password:"
+          id="password"
+          name="password"
           type="text"
-          placeholder="Enter Category..."
-          icon={BiSolidCategory}
+          placeholder="password..."
+          icon={FaLock}
+        />
+        <InputControl
+          label="Confirm Password:"
+          id="passwordConfirmation"
+          name="passwordConfirmation"
+          type="text"
+          placeholder="confirm_password..."
+          icon={FaLock}
         />
 
         <div className="flex justify-center py-5 gap-2">
@@ -33,12 +32,12 @@ export default function innerCategoryForm(params: CategoryFormProps) {
             className="bg-blue-500 px-5 py-2 rounded-md"
             type="submit"
           >
-            {params?.category ? "Edit Category" : "Add Category"}
+            {"Change Password"}
             {params.isSubmitting && <Spinner />}
           </button>
           <Link
-            href={`/admin/category?page=${params.page}`}
-            as={`/admin/category?page=${params.page}`}
+            href={"/admin/profile"}
+            as={"/admin/profile"}
             className="bg-red-500 px-5 py-2 rounded-md"
           >
             Cancel

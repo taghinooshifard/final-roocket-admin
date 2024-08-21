@@ -1,5 +1,7 @@
 "use client";
+import FilterPostForm from "@/app/components/forms/post/filter/FilterPostForm";
 import PostForm from "@/app/components/forms/post/PostForm";
+import PostListItem from "@/app/components/forms/post/PostListItem";
 import EmptyList from "@/app/components/shared/emptyList";
 import LoadingSpinner from "@/app/components/shared/loadingSpinner";
 import Modal from "@/app/components/shared/modal";
@@ -15,18 +17,32 @@ interface Props {}
 export default function AdminPostPage(params: Props) {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const [filter, setFilter] = useState("");
   const [page, setPage] = useState(1);
   const queryPage = searchParams.get("page");
   useEffect(() => {
     setPage(parseInt(queryPage ?? "1"));
   }, [queryPage]);
+  const TitleFilter = searchParams.get("title");
+  const CategoryFilter = searchParams.get("category_id");
+  const PublishedFilter = searchParams.get("is_published");
+  useEffect(() => {
+    let queryFilter = "";
+    if (TitleFilter && TitleFilter?.length > 0)
+      queryFilter = `&title=${TitleFilter}`;
+    if (CategoryFilter && CategoryFilter?.length > 0)
+      queryFilter += `&category_id=${CategoryFilter}`;
+    if (PublishedFilter && PublishedFilter?.length > 0)
+      queryFilter += `&is_published=${PublishedFilter}`;
+    if (queryFilter.length > 0) setFilter(queryFilter);
+  }, [TitleFilter, CategoryFilter, PublishedFilter]);
   const {
     data: PostList,
     error,
     loading,
     mutate,
   } = useData({
-    url: `url=article&page=${page}&per_page=5`,
+    url: `url=article&page=${page}&per_page=5${filter}`,
   });
   if (loading)
     return (
@@ -36,19 +52,28 @@ export default function AdminPostPage(params: Props) {
     );
   if (error) return <h1>{error.messages}</h1>;
 
+  const isFilterOpen = () => searchParams.has("filter");
+  const filterFunc = (filter: string) => {
+    setFilter(filter);
+    router.push(`/admin/post?page=${page}${filter}`);
+  };
+  const RemoveFilterFunc = () => {
+    setFilter("");
+    router.push(`/admin/post?page=${page}`);
+  };
   const isOpen = () => searchParams.has("create");
   const onPageChange = ({ selected }: { selected: number }) =>
-    router.push(`/admin/post?page=${selected + 1}`);
+    router.push(`/admin/post?page=${selected + 1}${filter}`);
 
   return (
     <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700">
-      {/* Post Page Haeder  */}
+      {/* Post Page Header  */}
       <div className="flex justify-between items-center mb-5">
         <div>
           <h1 className="text-2xl font-bold">Posts List</h1>
           <p>This page shows post list.</p>
         </div>
-        {/* Buttos Show Modal Create Post */}
+        {/* Buttons Show Modal Create Post */}
         {
           <Link
             className="text-gray-600 hover:text-white bg-blue-300 hover:bg-blue-600 px-4 py-2 rounded-md"
@@ -58,6 +83,22 @@ export default function AdminPostPage(params: Props) {
             Add Post List
           </Link>
         }
+        {filter.length == 0 ? (
+          <Link
+            className="text-gray-600 text-center hover:text-white bg-blue-300 hover:bg-blue-600 px-4 py-2 rounded-md"
+            as="/admin/post?filter"
+            href={"/admin/post/filter"}
+          >
+            Filter
+          </Link>
+        ) : (
+          <button
+            onClick={RemoveFilterFunc}
+            className="text-gray-600 text-center hover:text-white bg-red-300 hover:bg-red-600 px-4 py-2 rounded-md"
+          >
+            RemoveFilter(1)
+          </button>
+        )}
       </div>
       {/* Modal Create Post Form */}
       {isOpen() && (
@@ -68,11 +109,23 @@ export default function AdminPostPage(params: Props) {
           }}
           title="Add Post"
         >
-          {/* app/componenets/forms/post/PostForm */}
+          {/* app/components/forms/post/PostForm */}
           <PostForm router={router} mutate={mutate} />
         </Modal>
       )}
-
+      {/* Modal Filter Category Form */}
+      {isFilterOpen() && (
+        <Modal
+          isOpen={isFilterOpen()}
+          setIsOpen={() => {
+            router.push("/admin/post?filter");
+          }}
+          title="Search Post"
+        >
+          {/* app/components/forms/post/filter/FilterPostForm */}
+          <FilterPostForm filterFunc={filterFunc} page={page} />
+        </Modal>
+      )}
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
         {/* Table Post Lists */}
         {PostList?.data?.data?.length > 0 ? (
@@ -101,18 +154,20 @@ export default function AdminPostPage(params: Props) {
                 <th scope="col" className="px-6 py-3">
                   Delete
                 </th>
+                <th scope="col" className="px-6 py-3">
+                  Comments
+                </th>
               </tr>
             </thead>
             <tbody>
               {PostList?.data?.data?.map((post: PostModel) => {
                 return (
-                  //   <CategoryListItem
-                  //     key={category.id}
-                  //     category={category}
-                  //     mutate={mutate}
-                  //     page={page}
-                  //   />
-                  <h1 key={post.id}>{post.title}</h1>
+                  <PostListItem
+                    key={post.id}
+                    post={post}
+                    mutate={mutate}
+                    page={page}
+                  />
                 );
               })}
             </tbody>
@@ -121,7 +176,7 @@ export default function AdminPostPage(params: Props) {
           <EmptyList text="There is no data..." />
         )}
         {/* navigation  Products List*/}
-        <nav aria-label="Page navigation Category">
+        <nav aria-label="Page navigation Posts">
           {PostList?.data?.last_page > 1 && (
             <ReactCustomePaginate
               onPageChange={onPageChange}

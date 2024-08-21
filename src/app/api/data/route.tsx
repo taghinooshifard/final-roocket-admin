@@ -92,7 +92,6 @@ export async function POST(request: NextRequest) {
 export async function PATCH(request: NextRequest) {
   try {
     const token = request.cookies.get(TOKEN_NAME);
-
     if (!token)
       return Response.json(
         { message: "دسترسی غیر مجاز" },
@@ -104,7 +103,6 @@ export async function PATCH(request: NextRequest) {
     const address = `${BaseUrl}${request.nextUrl.searchParams.get("url")}`;
     //Remove url parameter from other url parameters for example title=Mytitle&page=2
     request.nextUrl.searchParams.delete("url");
-
     const FormData = await request.json();
 
     const res = await fetch(address, {

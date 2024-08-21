@@ -13,6 +13,7 @@ import MessageError from "@/app/exceptions/MessageError";
 import Modal from "../../shared/modal";
 import EditCategoryForm from "./EditCatgoryForm";
 import { Delete } from "@/app/tools/ApiManager";
+import { filter } from "lodash";
 
 interface Props {
   category: CategoryModel;
@@ -21,8 +22,14 @@ interface Props {
     total_page: any;
   }>;
   page: number;
+  filter: string;
 }
-export default function CategoryListItem({ category, mutate, page }: Props) {
+export default function CategoryListItem({
+  category,
+  mutate,
+  page,
+  filter,
+}: Props) {
   const user = useSelector(selectUser);
   const [deleteShow, setDeleteShow] = useState(false);
   const router = useRouter();
@@ -37,7 +44,7 @@ export default function CategoryListItem({ category, mutate, page }: Props) {
         await toast.success("Category Deleted.");
       }
       await mutate();
-      router.push(`/admin/category?page=${page}`);
+      router.push(`/admin/category?page=${page}&${filter}`);
     } catch (error: any) {
       if (error instanceof MessageError) {
         toast.error(error.messages);
@@ -64,7 +71,7 @@ export default function CategoryListItem({ category, mutate, page }: Props) {
             isOpen={true}
             setIsOpen={async () => {
               await mutate();
-              router.push(`/admin/category?page=${page}`);
+              router.push(`/admin/category?page=${page}${filter}`);
             }}
             title="Edit Category"
           >
@@ -74,6 +81,7 @@ export default function CategoryListItem({ category, mutate, page }: Props) {
               mutate={mutate}
               category={category}
               page={page}
+              filter={filter}
             />
           </Modal>
         )}

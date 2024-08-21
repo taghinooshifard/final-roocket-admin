@@ -2,7 +2,7 @@ import DeleteConfirmation from "@/app/components/shared/deleteConfirmation";
 
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "react-toastify";
 import { KeyedMutator } from "swr";
 
@@ -10,9 +10,10 @@ import { useSelector } from "react-redux";
 import { selectUser } from "@/app/store/auth";
 import MessageError from "@/app/exceptions/MessageError";
 import Modal from "../../shared/modal";
-import EditCategoryForm from "./EditCatgoryForm";
-import { Delete } from "@/app/tools/ApiManager";
+import { Delete, Get } from "@/app/tools/ApiManager";
 import PostModel from "@/app/models/PostData";
+import EditPostForm from "./EditPostForm";
+import { now } from "lodash";
 
 interface Props {
   post: PostModel;
@@ -27,7 +28,7 @@ export default function PostListItem({ post, mutate, page }: Props) {
   const [deleteShow, setDeleteShow] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
-  const isOpen = () => searchParams.has(`edit-${post.slug}`);
+  const isOpen = () => searchParams.has(`edit-${post.id}`);
   const deleteHandler = async () => {
     try {
       const data = await Delete({
@@ -44,13 +45,29 @@ export default function PostListItem({ post, mutate, page }: Props) {
       }
     }
   };
+  const onLoadHandler = async () => {
+    try {
+      const data = await Get({
+        url: `/api/data?url=article/${post.slug}`,
+      });
+
+      post = await data;
+      console.log("data:", data);
+      console.log("post:", post);
+    } catch (error: any) {
+      if (error instanceof MessageError) {
+        toast.error(error.messages);
+      }
+    }
+  };
+
   return (
     <tr key={post.id}>
       <td className="hidden">
         {deleteShow && (
           <DeleteConfirmation
-            header={`Delete Category {${category.title}}`}
-            description={`Are you sure for delete {${category.title}}?`}
+            header={`Delete Post {${post.title}}`}
+            description={`Are you sure for delete {${post.title}}?`}
             cancelHandler={() => {
               setDeleteShow(false);
             }}
@@ -61,32 +78,49 @@ export default function PostListItem({ post, mutate, page }: Props) {
       <td className="hidden">
         {isOpen() && (
           <Modal
+            onload={onLoadHandler}
             isOpen={true}
             setIsOpen={async () => {
               await mutate();
-              router.push(`/admin/category?page=${page}`);
+              router.push(`/admin/post?page=${page}`);
             }}
-            title="Edit Category"
+            title="Edit Post"
           >
-            {/* app/forms/admin/product/CreateProductForm */}
-            <EditCategoryForm
+            {/* app/forms/admin/post/EditPostForm */}
+            <EditPostForm
               router={router}
               mutate={mutate}
-              category={category}
+              post={post}
               page={page}
             />
           </Modal>
         )}
       </td>
       <th scope="col" className="px-6 py-3">
-        {category.title}
+        {post.title}
       </th>
-
+      <th scope="col" className="px-6 py-3">
+        <Link
+          className="text-indigo-50 bg-indigo-300 border px-1 py-1 rounded-lg hover:bg-indigo-700"
+          href={post.image_url ?? ""}
+        >
+          View
+        </Link>
+      </th>
+      <th scope="col" className="px-6 py-3">
+        {post.slug}
+      </th>
+      <th scope="col" className="px-6 py-3">
+        {post.category_title}
+      </th>
+      <th scope="col" className="px-6 py-3">
+        {new Date(post.published_at).toLocaleString()}
+      </th>
       {
         <th scope="col" className="px-6 py-3">
           <Link
-            href={`/admin/category/${category.id}/edit`}
-            as={`/admin/category/?page=${page}&edit-${category.id}`}
+            href={`/admin/post/${post.id}/edit`}
+            as={`/admin/post/?page=${page}&edit-${post.id}`}
             className="rounded-md px-5 py-2 bg-blue-700 text-white "
           >
             Edit
@@ -103,6 +137,17 @@ export default function PostListItem({ post, mutate, page }: Props) {
           >
             Delete
           </button>
+        </th>
+      }
+      {
+        <th scope="col" className="px-6 py-3">
+          <Link
+            className="rounded-md px-5 py-2 bg-yellow-700 text-white"
+            href={`/admin/post/${post.id}/comments`}
+            as={`/admin/post/${post.id}/comments`}
+          >
+            comments
+          </Link>
         </th>
       }
     </tr>
