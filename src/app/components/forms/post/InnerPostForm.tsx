@@ -1,4 +1,4 @@
-import { PostModel } from "@/app/models/PostData";
+import PostModel from "@/app/models/PostData";
 import { Form, FormikProps } from "formik";
 import Link from "next/link";
 import InputControl from "../controls/Input";
@@ -18,13 +18,13 @@ type PostFormProps = FormikProps<PostModel> & {
   page: number;
 };
 
-export default function innerPostForm(params: PostFormProps) {
+export default function InnerPostForm(params: PostFormProps) {
   const onChange = (value: string | undefined) => {
     params.setFieldValue("content", value);
   };
   return (
-    <div className="flex  py-2 px-2 grid-cols-6  ">
-      <Form className="flex flex-col gap-4">
+    <div className="flex  py-2 px-2 grid-cols-6">
+      <Form className="flex flex-col gap-4 mt-44">
         <InputControl
           label="Post Title:"
           id="title"

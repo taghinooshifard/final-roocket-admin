@@ -119,6 +119,8 @@ export async function PATCH(request: NextRequest) {
       status: res.status,
     });
   } catch (error: any) {
+    console.log(error);
+
     return Response.json(
       { message: "خطا در ارتباط با سرور رخ داده است" },
       {

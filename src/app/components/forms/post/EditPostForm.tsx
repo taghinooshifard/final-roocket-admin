@@ -9,8 +9,8 @@ import { toast } from "react-toastify";
 import { KeyedMutator } from "swr";
 import PostModel from "@/app/models/PostData";
 import MessageError from "@/app/exceptions/MessageError";
-import Patch from "@/app/tools/ApiManager";
-import innerPostForm from "./InnerPostForm";
+import { Patch } from "@/app/tools/ApiManager";
+import InnerPostForm from "./InnerPostForm";
 const PostFormSchema = yup.object().shape({
   title: yup.string().required().min(5).max(255),
   slug: yup.string().required().min(5).max(255),
@@ -27,6 +27,7 @@ export interface PostDefaultValues {
   post: PostModel;
   page?: number;
 }
+
 const EditPostForm = withFormik<PostDefaultValues, PostModel>({
   mapPropsToValues: (props) => {
     return {
@@ -45,6 +46,7 @@ const EditPostForm = withFormik<PostDefaultValues, PostModel>({
   handleSubmit: async (values, { props, setFieldError, setSubmitting }) => {
     try {
       setSubmitting(true);
+
       const data = await Patch({
         url: `/api/data?url=/article/${props.post.slug}`,
         values,
@@ -68,6 +70,6 @@ const EditPostForm = withFormik<PostDefaultValues, PostModel>({
     }
   },
   validationSchema: PostFormSchema,
-})(innerPostForm);
+})(InnerPostForm);
 
 export default EditPostForm;

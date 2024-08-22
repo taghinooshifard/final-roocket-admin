@@ -1,11 +1,9 @@
 import DeleteConfirmation from "@/app/components/shared/deleteConfirmation";
-
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { KeyedMutator } from "swr";
-
 import { useSelector } from "react-redux";
 import { selectUser } from "@/app/store/auth";
 import MessageError from "@/app/exceptions/MessageError";
@@ -13,7 +11,6 @@ import Modal from "../../shared/modal";
 import { Delete, Get } from "@/app/tools/ApiManager";
 import PostModel from "@/app/models/PostData";
 import EditPostForm from "./EditPostForm";
-import { now } from "lodash";
 
 interface Props {
   post: PostModel;
@@ -24,6 +21,7 @@ interface Props {
   page: number;
 }
 export default function PostListItem({ post, mutate, page }: Props) {
+  const [myPost, setMyPost] = useState<PostModel>();
   const user = useSelector(selectUser);
   const [deleteShow, setDeleteShow] = useState(false);
   const router = useRouter();
@@ -45,22 +43,22 @@ export default function PostListItem({ post, mutate, page }: Props) {
       }
     }
   };
-  const onLoadHandler = async () => {
-    try {
-      const data = await Get({
-        url: `/api/data?url=article/${post.slug}`,
-      });
 
-      post = await data;
-      console.log("data:", data);
-      console.log("post:", post);
-    } catch (error: any) {
-      if (error instanceof MessageError) {
-        toast.error(error.messages);
+  useEffect(() => {
+    const onLoadHandler = async () => {
+      try {
+        const data = await Get({
+          url: `/api/data?url=article/${post.slug}`,
+        });
+        setMyPost(await data?.data);
+      } catch (error: any) {
+        if (error instanceof MessageError) {
+          toast.error(error.messages);
+        }
       }
-    }
-  };
-
+    };
+    onLoadHandler();
+  }, []);
   return (
     <tr key={post.id}>
       <td className="hidden">
@@ -78,7 +76,6 @@ export default function PostListItem({ post, mutate, page }: Props) {
       <td className="hidden">
         {isOpen() && (
           <Modal
-            onload={onLoadHandler}
             isOpen={true}
             setIsOpen={async () => {
               await mutate();
@@ -90,7 +87,7 @@ export default function PostListItem({ post, mutate, page }: Props) {
             <EditPostForm
               router={router}
               mutate={mutate}
-              post={post}
+              post={myPost ?? post}
               page={page}
             />
           </Modal>

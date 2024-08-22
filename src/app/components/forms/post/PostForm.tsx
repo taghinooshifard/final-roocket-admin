@@ -7,17 +7,15 @@ import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.share
 
 import { Bounce, toast } from "react-toastify";
 import { KeyedMutator } from "swr";
-import { PostModel } from "@/app/models/PostData";
+import PostModel from "@/app/models/PostData";
 import MessageError from "@/app/exceptions/MessageError";
 import Post from "@/app/tools/ApiManager";
-import innerPostForm from "./InnerPostForm";
+import InnerPostForm from "./InnerPostForm";
 const PostFormSchema = yup.object().shape({
   title: yup.string().required().min(5).max(255),
   slug: yup.string().required().min(5).max(255),
   is_published: yup.boolean().required(),
-  category_id: yup
-    .number()
-    .moreThan(0, "Please Select a Category"),
+  category_id: yup.number().moreThan(0, "Please Select a Category"),
   image_url: yup.string().url("Url is not correct"),
 });
 export interface PostDefaultValues {
@@ -35,12 +33,12 @@ const PostForm = withFormik<PostDefaultValues, PostModel>({
       is_published: false,
       category_id: 0,
       content: "",
-      image_url:""
+      image_url: "",
+      published_at: 0,
     };
   },
   handleSubmit: async (values, { props, setFieldError, setSubmitting }) => {
     try {
-
       setSubmitting(true);
 
       const data = await Post({
@@ -67,6 +65,6 @@ const PostForm = withFormik<PostDefaultValues, PostModel>({
     }
   },
   validationSchema: PostFormSchema,
-})(innerPostForm);
+})(InnerPostForm);
 
 export default PostForm;
