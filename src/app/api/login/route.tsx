@@ -1,19 +1,18 @@
-import { MAX_AGE, TOKEN_NAME, BaseUrl } from "@/app/models/DefaultData";
-
 import cookie from "cookie";
-import { NextRequest } from "next/server";
-
 export async function POST(request: Request) {
   try {
+    console.log("process.env.TOKEN_NAME:", process.env.TOKEN_NAME);
+    console.log("process.env.MAX_AGE:", process.env.MAX_AGE);
+
     const { token } = await request.json();
     return Response.json(
       { token: token },
       {
         status: 200,
         headers: {
-          "Set-Cookie": cookie.serialize(TOKEN_NAME, token, {
+          "Set-Cookie": cookie.serialize(process.env.TOKEN_NAME, token, {
             httpOnly: true,
-            maxAge: MAX_AGE,
+            maxAge: process.env.MAX_AGE,
             sameSite: "lax",
             path: "/",
           }),

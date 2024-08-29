@@ -1,7 +1,3 @@
-import { useRouter } from "next/navigation";
-import useAuth from "../hooks/useAuth";
-import LoadingSpinner from "./shared/loadingSpinner";
-import Spinner from "./shared/Spinner";
 import { BiUserCircle } from "react-icons/bi";
 import { useAppSelector } from "../hooks";
 import { selectUser } from "../store/auth";

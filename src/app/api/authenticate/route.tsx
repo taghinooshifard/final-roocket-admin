@@ -1,10 +1,7 @@
-import { BaseUrl } from "@/app/models/DefaultData";
-import { log } from "console";
-
 export async function POST(request: Request) {
   try {
     const loginFormData = await request.json();
-    const res = await fetch(`${BaseUrl}/login`, {
+    const res = await fetch(`${process.env.BaseUrl}/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

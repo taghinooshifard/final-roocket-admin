@@ -1,4 +1,3 @@
-import { TOKEN_NAME } from "../models/DefaultData";
 import { Get } from "../tools/ApiManager";
 import { useAppDispatch, useAppSelector } from ".";
 import { selectUser, updateUser } from "../store/auth";

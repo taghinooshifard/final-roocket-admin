@@ -61,13 +61,13 @@ export default function SideBarAdminLayout(props: Props) {
     {
       name: "Persian",
       alt: "Persian Flag",
-      src: "/fa.png",
+      src: "/images/fa.png",
       dir: "rtl",
     },
     {
       name: "English",
       alt: "English Flag",
-      src: "/en.png",
+      src: "/images/en.png",
       dir: "ltr",
     },
   ];
@@ -147,7 +147,7 @@ export default function SideBarAdminLayout(props: Props) {
                 <Image
                   width={40}
                   height={40}
-                  src="/tailwind.svg"
+                  src="/images/tailwind.svg"
                   className="h-8 me-3"
                   alt="Site Logo"
                 />

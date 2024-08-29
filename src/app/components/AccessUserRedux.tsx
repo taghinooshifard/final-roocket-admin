@@ -11,13 +11,14 @@ interface Props {
 
 export default function AccessUserRedux(params: Props) {
   const { user, error, loading } = useAuth();
+  console.log("AccessUserRedux:user, error, loading", user, error, loading);
   const route = useRouter();
+  if (error) route.push("/login");
   if (loading)
     return (
       <div className="text-center mt-10">
-        <LoadingSpinner message="سامانه در حال بررسی دسترسی شماست. لطفا منتظر بمانید" />
+        <LoadingSpinner message="System is checking your access.please wait..." />
       </div>
     );
   if (user) return params.children;
-  if (error) route.push("/login");
 }

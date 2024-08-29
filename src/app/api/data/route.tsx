@@ -1,10 +1,8 @@
-import { BaseUrl, TOKEN_NAME } from "@/app/models/DefaultData";
 import { NextRequest } from "next/server";
-import { getPrameters } from "../tools";
 
 export async function GET(request: NextRequest) {
   try {
-    const token = request.cookies.get(TOKEN_NAME);
+    const token = request.cookies.get(process.env.TOKEN_NAME ?? "");
     if (!token)
       return Response.json(
         { message: "دسترسی غیر مجاز" },
@@ -13,7 +11,9 @@ export async function GET(request: NextRequest) {
         }
       );
     //Generate  RequestURL for Admin Site for example url=article-category
-    const address = `${BaseUrl}/${request.nextUrl.searchParams.get("url")}`;
+    const address = `${process.env.BaseUrl}/${request.nextUrl.searchParams.get(
+      "url"
+    )}`;
     //Remove url parameter from other url parameters for example title=Mytitle&page=2
     request.nextUrl.searchParams.delete("url");
     const url =
@@ -52,7 +52,7 @@ export async function GET(request: NextRequest) {
 }
 export async function POST(request: NextRequest) {
   try {
-    const token = request.cookies.get(TOKEN_NAME);
+    const token = request.cookies.get(process.env.TOKEN_NAME ?? "");
 
     if (!token)
       return Response.json(
@@ -62,7 +62,9 @@ export async function POST(request: NextRequest) {
         }
       );
     //Generate  RequestURL for Admin Site for example url=article-category
-    const address = `${BaseUrl}${request.nextUrl.searchParams.get("url")}`;
+    const address = `${process.env.BaseUrl}${request.nextUrl.searchParams.get(
+      "url"
+    )}`;
     //Remove url parameter from other url parameters for example title=Mytitle&page=2
     request.nextUrl.searchParams.delete("url");
 
@@ -91,7 +93,7 @@ export async function POST(request: NextRequest) {
 }
 export async function PATCH(request: NextRequest) {
   try {
-    const token = request.cookies.get(TOKEN_NAME);
+    const token = request.cookies.get(process.env.TOKEN_NAME ?? "");
     if (!token)
       return Response.json(
         { message: "دسترسی غیر مجاز" },
@@ -100,7 +102,9 @@ export async function PATCH(request: NextRequest) {
         }
       );
     //Generate  RequestURL for Admin Site for example url=article-category
-    const address = `${BaseUrl}${request.nextUrl.searchParams.get("url")}`;
+    const address = `${process.env.BaseUrl}${request.nextUrl.searchParams.get(
+      "url"
+    )}`;
     //Remove url parameter from other url parameters for example title=Mytitle&page=2
     request.nextUrl.searchParams.delete("url");
     const FormData = await request.json();
@@ -131,7 +135,7 @@ export async function PATCH(request: NextRequest) {
 }
 export async function DELETE(request: NextRequest) {
   try {
-    const token = request.cookies.get(TOKEN_NAME);
+    const token = request.cookies.get(process.env.TOKEN_NAME ?? "");
 
     if (!token)
       return Response.json(
@@ -141,7 +145,9 @@ export async function DELETE(request: NextRequest) {
         }
       );
     //Generate  RequestURL for Admin Site for example url=article-category
-    const address = `${BaseUrl}${request.nextUrl.searchParams.get("url")}`;
+    const address = `${process.env.BaseUrl}${request.nextUrl.searchParams.get(
+      "url"
+    )}`;
     //Remove url parameter from other url parameters for example title=Mytitle&page=2
     request.nextUrl.searchParams.delete("url");
 

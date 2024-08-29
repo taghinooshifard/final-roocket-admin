@@ -1,9 +1,8 @@
-import { BaseUrl, TOKEN_NAME } from "@/app/models/DefaultData";
 import { NextRequest } from "next/server";
 
 export async function GET(request: NextRequest) {
   try {
-    const token = request.cookies.get(TOKEN_NAME);
+    const token = request.cookies.get(process.env.TOKEN_NAME ?? "");
     if (!token)
       return Response.json(
         { message: "دسترسی غیر مجاز" },
@@ -11,7 +10,7 @@ export async function GET(request: NextRequest) {
           status: 401,
         }
       );
-    const res = await fetch(`${BaseUrl}/current-user`, {
+    const res = await fetch(`${process.env.BaseUrl}/current-user`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

@@ -1,5 +1,5 @@
 import Image from "next/image";
-import empty from "../../../../public/empty.png";
+import empty from "../../../../public/images/empty.png";
 import { TbMoodEmpty } from "react-icons/tb";
 
 interface Props {

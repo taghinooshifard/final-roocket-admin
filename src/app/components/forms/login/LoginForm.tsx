@@ -42,7 +42,7 @@ const LoginForm = withFormik<LoginDefaultValues, LoginParams>({
           url: "/api/login",
           values: { token: data?.token },
         });
-        toast.success("مجوز ورود صادر شد", {
+        toast.success("Wellcom to admin panel", {
           position: "top-right",
           autoClose: 5000,
           hideProgressBar: false,
@@ -53,9 +53,9 @@ const LoginForm = withFormik<LoginDefaultValues, LoginParams>({
           theme: "colored",
           transition: Bounce,
         });
-        setSubmitting(false);
         props.dispatch(updateUser(undefined));
         props.route.push("/admin");
+        setSubmitting(false);
       }
     } catch (error: any) {
       setSubmitting(false);

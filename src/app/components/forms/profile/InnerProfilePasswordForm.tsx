@@ -19,10 +19,10 @@ export default function InnerProfilePasswordForm(params: CategoryFormProps) {
         />
         <InputControl
           label="Confirm Password:"
-          id="passwordConfirmation"
-          name="passwordConfirmation"
+          id="password_confirmation"
+          name="password_confirmation"
           type="text"
-          placeholder="confirm_password..."
+          placeholder="confirm password..."
           icon={FaLock}
         />
 

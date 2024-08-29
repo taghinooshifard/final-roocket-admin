@@ -13,7 +13,7 @@ import InnerProfilePasswordForm from "./InnerProfilePasswordForm";
 
 const ProfilePasswordSchema = yup.object().shape({
   password: yup.string().required("Password is required"),
-  passwordConfirmation: yup
+  password_confirmation: yup
     .string()
     .oneOf([yup.ref("password")], "Passwords must match"),
 });
@@ -31,7 +31,7 @@ const EditPasswordForm = withFormik<ProfileNameDefaultValues, ProfileModel>({
       name: props.profile?.name,
       email: props.profile?.email,
       password: props.profile?.password,
-      passwordConfirmation: props.profile?.password,
+      password_confirmation: props.profile?.password_confirmation,
     };
   },
   handleSubmit: async (values, { props, setFieldError, setSubmitting }) => {
@@ -39,11 +39,7 @@ const EditPasswordForm = withFormik<ProfileNameDefaultValues, ProfileModel>({
       setSubmitting(true);
       const data = await Patch({
         url: `/api/data?url=/profile/update-password`,
-        values: {
-          password: values.password,
-          "password.confirmation": values.passwordConfirmation,
-        },
-        // values,
+        values,
       });
       if (data?.message) {
         await toast.success("Password Changed.");
